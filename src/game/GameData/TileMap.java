@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+
 public class TileMap {
 
     public Tile[][] table;
 
     private int row, column;
 
-    TileMap(int r, int c) {
+    public TileMap(int r, int c) {
         this.row = r;
 
         this.column = c;
@@ -22,6 +23,10 @@ public class TileMap {
     public Tile[][] getTable() {
         return table;
     }
+
+    public Tile getTile(int i, int j) {
+        return this.table[i][j];
+      }
 
     public int getRow() {
         return row;
@@ -35,6 +40,7 @@ public class TileMap {
         return column;
     }
 
+   
     public void setColumn(int column) {
         this.column = column;
     }
@@ -78,6 +84,7 @@ public class TileMap {
                     this.table[x][y].setColor("Match");
                     this.table[x + 1][y].setColor("Match");
                     this.table[x + 2][y].setColor("Match");
+                    System.out.println("MATHCED");
                 }
             }
         }
@@ -88,6 +95,8 @@ public class TileMap {
                     this.table[x][y].setColor("Match");
                     this.table[x][y + 1].setColor("Match");
                     this.table[x][y + 2].setColor("Match");
+                    System.out.println("MATHCED");
+
                 }
             }
         }
@@ -98,7 +107,7 @@ public class TileMap {
             for (int y = 0; y < column; y++) {
                 if (this.table[x][y].getColor().equals("Match")) {
                     int current_row = x;
-
+                    System.out.println("Upadted");
                     for (int z = current_row; z > 0; z--) {
 
                         this.table[z][y].setColor(this.table[z - 1][y].getColor());

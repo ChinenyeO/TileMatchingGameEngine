@@ -1,12 +1,12 @@
 package GameData;
 
-class Tile {
+public class Tile {
 
 	private int x;
 	private int y;
 	private String color;
 
-	Tile(int newX, int newY, String newColor) {
+	public Tile(int newX, int newY, String newColor) {
 		this.x = newX;
 		this.y = newY;
 		this.color = newColor; 

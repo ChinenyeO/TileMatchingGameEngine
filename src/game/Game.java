@@ -1,5 +1,4 @@
-package game;
-
+import GameData.*;
 import javax.swing.JFrame; //imports JFrame library
 import javax.swing.JLabel;
 import javax.swing.JButton; //imports JButton library
@@ -8,6 +7,7 @@ import javax.swing.JTextField;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Game extends JFrame {
@@ -22,9 +22,8 @@ public class Game extends JFrame {
 	private JButton newGame;
 	private JButton statistics;
 	private boolean tileClicked = false;
-	
-	
-	
+	public  TileMap map;
+	public JPanel TileFrame;
 	public Game(int rows, int columns) {
 		
 		setLayout(new BorderLayout()); //setting layout
@@ -35,11 +34,31 @@ public class Game extends JFrame {
 		result.setLayout(new BorderLayout());
 		result.add(createLeftPanel(), BorderLayout.WEST);
 		result.add(createRightPanel(), BorderLayout.EAST);
-		result.add(makeGrid(rows,columns), BorderLayout.CENTER);
+		result.add(makeGrid(), BorderLayout.CENTER);
 		add(result);
 		setSize(WIDTH, HEIGHT);
 		
 	}
+
+	public Game(TileMap map){
+		this.map = map;
+		this.map.fillBoard();
+
+
+		setLayout(new BorderLayout()); //setting layout
+		createLeftComponents(); //creating player + score components
+		createRightComponents(); //creating quit/stats/new game buttons 
+
+		JPanel result = new JPanel(); //new panel
+		result.setLayout(new BorderLayout());
+		result.add(createLeftPanel(), BorderLayout.WEST);
+		result.add(createRightPanel(), BorderLayout.EAST);
+		result.add(makeGrid(), BorderLayout.CENTER);
+		add(result);
+		setSize(WIDTH, HEIGHT);
+		
+	}
+	
 	
 	
 	private Component createLeftPanel() { 
@@ -136,26 +155,59 @@ public class Game extends JFrame {
 		}
 		
 		return panel;	
-	}
 	
-	private Component makeGrid(int rows, int columns) {
+	}
+
+
+	private Component updateTiles() {
 		//making the grid in the middle
-		Random rand = new Random();
-		int maxRand = 5;
-		Color colors[] = {Color.red, Color.blue, Color.yellow, Color.green, Color.pink, Color.black};
-		JPanel frame = new JPanel();
-		frame.setLayout(new GridLayout(rows, columns));
-		for ( int i = 0; i < rows; i++ ) {
-			for ( int j = 0; j < columns; j++ ) {
+		HashMap<String,Color> colorMap = new HashMap<String,Color>();
+		colorMap.put("R", Color.RED);
+		colorMap.put("B", Color.BLUE);
+		colorMap.put("P", Color.pink);
+		colorMap.put("Y", Color.yellow);
+		colorMap.put("G", Color.GREEN);		
+		colorMap.put("O", Color.orange);
+
+		TileFrame = new JPanel();
+		TileFrame.setLayout(new GridLayout(map.getRow(), map.getColumn()));
+		for ( int i = 0; i < map.getRow(); i++ ) {
+			for ( int j = 0; j < map.getColumn(); j++ ) {
 				JButton btn = new JButton();
-				btn.setBackground(colors[rand.nextInt(maxRand)]);
+				btn.setBackground(colorMap.get(map.getTile(i, j).getColor()));
 				tileClickedEvent(btn);
 				btn.setName(String.format("%d,%d",i,j));
-				frame.add(btn);
+				TileFrame.add(btn);
 			}			
 		}
-		frame.setBackground(Color.RED);
-		return frame;
+		TileFrame.setBackground(Color.RED);
+		return TileFrame;
+	}
+	
+	
+	private Component makeGrid() {
+		//making the grid in the middle
+		HashMap<String,Color> colorMap = new HashMap<String,Color>();
+		colorMap.put("R", Color.RED);
+		colorMap.put("B", Color.BLUE);
+		colorMap.put("P", Color.pink);
+		colorMap.put("Y", Color.yellow);
+		colorMap.put("G", Color.GREEN);		
+		colorMap.put("O", Color.orange);
+
+		TileFrame = new JPanel();
+		TileFrame.setLayout(new GridLayout(map.getRow(), map.getColumn()));
+		for ( int i = 0; i < map.getRow(); i++ ) {
+			for ( int j = 0; j < map.getColumn(); j++ ) {
+				JButton btn = new JButton();
+				btn.setBackground(colorMap.get(map.getTile(i, j).getColor()));
+				tileClickedEvent(btn);
+				btn.setName(String.format("%d,%d",i,j));
+				TileFrame.add(btn);
+			}			
+		}
+		TileFrame.setBackground(Color.RED);
+		return TileFrame;
 	}
 	
 	private void tileClickedEvent(JButton btn) {
@@ -163,14 +215,33 @@ public class Game extends JFrame {
 	    	@Override
 	    	public void actionPerformed(ActionEvent e) {
 	    		System.out.println(String.format("tile clicked at location: %s", btn.getName()));
-	    		tileClicked = !(tileClicked);
+				tileClicked = !(tileClicked);
+				
+				if(!tileClicked){
+					System.out.println("title clicked");
+					map.checkMatches();
+					map.updateBoard();
+					TileFrame.removeAll();
+
+					updateTiles();
+					TileFrame.revalidate();
+					TileFrame.repaint();
+
+				}
+				System.out.println("tileclicked is: " + tileClicked);
+
+
+
+
 	    		}
 	    	});
 	}
-	
+	ss
 
 	public static void main(String[] args) {
-		JFrame frame = new Game(5,5);
+
+		JFrame frame = new Game(new TileMap(5,5));
+		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
