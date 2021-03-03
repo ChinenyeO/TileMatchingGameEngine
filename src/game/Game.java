@@ -236,7 +236,6 @@ public class Game extends JFrame {
 	    		}
 	    	});
 	}
-	ss
 
 	public static void main(String[] args) {
 
